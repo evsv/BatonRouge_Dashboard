@@ -4,6 +4,7 @@ library(dplyr)
 library(ggplot2)
 library(stringr)
 library(lubridate)
+library(hms)
 
 # 1.2. READING THE FLAT FILE
 
@@ -72,6 +73,7 @@ brRawData <- mutate(brRawData, offense_date = mdy(offense_date),
 ## 1.5.1. EXTRACTING DAY OF WEEK
 
 brRawData <- mutate(brRawData, day_of_week = wday(offense_date, label = TRUE))
+ 
 
 ## 1.5.2. EXTRACTING THE LATLONG
 
