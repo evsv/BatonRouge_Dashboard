@@ -32,3 +32,25 @@ View(filter(brRawData, offense_time == as.hms(00:00:00)))
 
 ## 2.1.4. CRIME ANALYSIS
 
+sum(is.na(brRawData$offense))
+sum(is.na(brRawData$offense_desc))
+sum(is.na(brRawData$crime))
+sum(is.na(brRawData$committed))
+
+distinct(brRawData, crime)
+distinct(brRawData, offense)
+distinct(brRawData, offense_desc)
+
+# 2.1.5. LOCATION ANALYSIS
+
+sum(is.na(brRawData$zip))
+sum(is.na(brRawData$lat))
+sum(is.na(brRawData$long))
+sum(is.na(brRawData$address))
+
+sum((is.na(brRawData$address) | is.na(brRawData$offense_time)))
+View(filter(brRawData, is.na(address), is.na(offense_time)))
+
+# FILLING OUT MISSING ZIP CODES FROM LATLON DATA
+# CURRENTLY UNABLE TO DO THIS, DUE TO API CALL LIMITS, CONNECTION 
+# BREAKS, ETC

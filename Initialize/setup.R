@@ -5,6 +5,7 @@ library(ggplot2)
 library(stringr)
 library(lubridate)
 library(hms)
+library(ggmap)
 
 # 1.2. READING THE FLAT FILE
 
