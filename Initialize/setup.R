@@ -83,3 +83,6 @@ brRawData <- mutate(brRawData,
              mutate(lat = as.numeric(str_sub(raw_lat_long, 1, regexpr(",", raw_lat_long)-1)),
                     long = as.numeric(str_sub(raw_lat_long, regexpr(" ", raw_lat_long), nchar(raw_lat_long)))) %>%
              select(-raw_lat_long)
+
+# 1.6. WRITING OUTPUT DATA FILE
+write.csv(brRawData, "brdata_cleaned.csv")
