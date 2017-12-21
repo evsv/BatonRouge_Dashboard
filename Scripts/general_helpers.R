@@ -46,19 +46,25 @@ LatLon2Zip <- function(lat, lon) {
 # Returns: filteredData, a dataframe.  
 #-------------------------------------------------------------------#
 
-FilterData <- function(data, startYear, endYear, startMonth, endMonth,
-                       startDay, endDay, zipCodes = "all", attempt = "both"){
+FilterData <- function(data, startDate = "all", endDate = "all", 
+                       zipCodes = "all", attempt = "both", offenseCategory = "all"){
   
-  filteredData <- data %>%
-                      filter(startYear <= year(offense_date), endYear >= year(offense_date),
-                             startMonth <= month(offense_date), endMonth >= month(offense_date),
-                             startDay <= day(offense_date), endDay >= day(offense_date))
+  filteredData <- data
+  
+  if(startDate != "all")
+    filteredData <- filter(filteredData, startDate <= offense_date)
+    
+  if(endDate != "all")
+    filteredData <- filter(filteredData, endDate >= offense_date)
   
   if(zipCodes != "all")
     filteredData <- filter(filteredData, zip %in% zipCodes)
   
   if(attempt != "both")
     filteredData <- filter(filteredData, committed = attempt)
+  
+  if(offenseCategory != "all")
+    filteredData <- filter(filteredData, crime %in% offenseCategory)
   
   filteredData <- arrange(filteredData, offense_date, offense_time)
   return(filteredData)
