@@ -2,6 +2,8 @@
 # THIS SCRIPT CONTAINS METHODS USED FOR THE OVERVIEW VIEW
 #===================================================================#
 
+library(dplyr)
+library(ggplot2)
 
 #-------------------------------------------------------------------#
 # ValidFilter()
@@ -101,5 +103,42 @@ ValidFilter <- function(data, startYear, endYear = c(), startMonth = c(), endMon
 }
 
 
+#-------------------------------------------------------------------#
+# OverviewGraphDataGen()
+#
+# currentData: dataframe. The dataframe containing the crime data for 
+#              the analysis period
+# previousData: dataframe. The dataframe containing the crime data for 
+#              the week preceding the analysis period
+#
+# Returns: finalData, a dataframe which contains the consolidated 
+#          crime data for the current and previous week 
+#          
+#-------------------------------------------------------------------#
+OverviewGraphDataGen <- function(currentData, previousData){
+  
+  currentData <- currentData %>%
+                 group_by(crime) %>%
+                 summarise(number_of_crimes = n()) %>%
+                 mutate(period = "Current Week")
+  
+  previousData <- previousData %>%
+                  group_by(crime) %>%
+                  summarise(number_of_crimes = n()) %>%
+                  mutate(period = "Previous Week")
+  
+  finalData <- rbind(currentData, previousData)
+  write.csv(finalData, "GraphData.csv")
+  return(finalData)
+  
+}
 
-
+OverviewGraphGen <- function(data){
+  
+  overviewPlot <- ggplot(data) +
+                  geom_bar(mapping = aes(x = crime, y = number_of_crimes, fill = period),
+                           position = "dodge", stat = "identity")
+  
+  return(overviewPlot)
+  
+}
