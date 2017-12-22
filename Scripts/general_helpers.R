@@ -51,10 +51,17 @@ FilterData <- function(data, startDate = "all", endDate = "all",
   
   filteredData <- data
   
-  if(startDate != "all")
+  print(class(startDate))
+  print(class(endDate))
+  print(startDate)
+  print(endDate)
+  
+  #str(data)
+  
+  if(as.character(startDate) != "all")
     filteredData <- filter(filteredData, startDate <= offense_date)
     
-  if(endDate != "all")
+  if(as.character(endDate) != "all")
     filteredData <- filter(filteredData, endDate >= offense_date)
   
   if(zipCodes != "all")
@@ -66,8 +73,13 @@ FilterData <- function(data, startDate = "all", endDate = "all",
   if(offenseCategory != "all")
     filteredData <- filter(filteredData, crime %in% offenseCategory)
   
-  filteredData <- arrange(filteredData, offense_date, offense_time)
+  filteredData <- arrange(filteredData, offense_date, offense_time) %>%
+                  mutate(rank_day = dense_rank(offense_date))
+  
+  #print(head(filteredData, 5))
+  #write.csv(filteredData, paste0(as.character(runif(1)), "_data.csv"))
   return(filteredData)
+  
 }
 
 # TESTING SCRIPTS, TO BE MOVED TO A SEPARATE TESTING FILE
