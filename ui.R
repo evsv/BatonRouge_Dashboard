@@ -32,7 +32,7 @@ ui <- fluidPage(
   
   fluidRow(
     
-    column(4, 
+    column(2, 
            
            wellPanel(
              selectInput("crimeSelector", "Select crime to deep dive into:",
@@ -42,11 +42,18 @@ ui <- fluidPage(
                                      "NON-RESIDENTIAL BURGLARY", "NUISANCE", "OTHER",
                                      "RESIDENTIAL BURGLARY", "SEXUAL ASSAULT", "THEFT",
                                       "VEHICLE BURGLARY", "VICE")
-                         )
+                         ),
+             
+             actionButton(inputId = "crimeFilterBtn", label = "Select Crime")
            )
           ),
     
-    column(8, h1("Output Placeholder"))
+    column(5, 
+           plotOutput("trendPlot")
+           ),
+    column(5,
+           h1("Placeholder")
+           )
     
   )
   

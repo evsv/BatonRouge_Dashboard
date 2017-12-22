@@ -102,6 +102,24 @@ ValidFilter <- function(data, startYear, endYear = c(), startMonth = c(), endMon
   
 }
 
+#-------------------------------------------------------------------#
+# CrimeIncidentSummarizer()
+#
+# data: dataframe. The dataframe containing the crime data for to be
+#       summarised
+#
+# Returns: data, a dataframe with the crime data summarized 
+#          
+#-------------------------------------------------------------------#
+CrimeIncidentSummarizer <- function(data, period){
+  
+  data <- data %>%
+          group_by(crime) %>%
+          summarise(number_of_incidents = n())
+  
+  return(data)
+  
+}
 
 #-------------------------------------------------------------------#
 # OverviewGraphDataGen()
@@ -117,28 +135,73 @@ ValidFilter <- function(data, startYear, endYear = c(), startMonth = c(), endMon
 #-------------------------------------------------------------------#
 OverviewGraphDataGen <- function(currentData, previousData){
   
-  currentData <- currentData %>%
-                 group_by(crime) %>%
-                 summarise(number_of_crimes = n()) %>%
-                 mutate(period = "Current Week")
+  currentData <- CrimeIncidentSummarizer(currentData, "current")
+  currentData <- mutate(currentData, period = "Current Week")
   
-  previousData <- previousData %>%
-                  group_by(crime) %>%
-                  summarise(number_of_crimes = n()) %>%
-                  mutate(period = "Previous Week")
+  previousData <- CrimeIncidentSummarizer(previousData, "previous")
+  previousData <- mutate(previousData, period = "Previous Week")
   
   finalData <- rbind(currentData, previousData)
-  write.csv(finalData, "GraphData.csv")
+  #write.csv(finalData, "GraphData.csv")
   return(finalData)
   
 }
 
+#-------------------------------------------------------------------#
+# OverviewGraphGen()
+#
+# data: dataframe. The dataframe containing the crime data for both 
+#       the current and previous window
+#
+# Returns: overviewPlot, a ggplot object which contains the graph to
+#          to be rendered
+#          
+#-------------------------------------------------------------------#
 OverviewGraphGen <- function(data){
   
   overviewPlot <- ggplot(data) +
-                  geom_bar(mapping = aes(x = crime, y = number_of_crimes, fill = period),
+                  geom_bar(mapping = aes(x = crime, y = number_of_incidents, fill = period),
                            position = "dodge", stat = "identity")
   
   return(overviewPlot)
+  
+}
+
+#-------------------------------------------------------------------#
+# TrendGraphDataGen()
+#
+# currentData: dataframe. The dataframe containing the crime data for 
+#              the analysis period
+# previousData: dataframe. The dataframe containing the crime data for 
+#              the week preceding the analysis period
+#
+# Returns: finalData, a dataframe which contains the consolidated 
+#          crime data for the current and previous week 
+#          
+#-------------------------------------------------------------------#
+TrendGraphDataGen <- function(currentData, previousData){
+  
+  currentData <- currentData %>%
+                 group_by(rank_day) %>%
+                 summarise(number_of_incidents = n()) %>%
+                 mutate(period = "Current Week")
+  
+  previousData <- previousData %>%
+                  group_by(rank_day) %>%
+                  summarise(number_of_incidents = n()) %>%
+                  mutate(period = "Previous Week")
+  
+  finalData <- rbind(currentData, previousData)
+  write.csv(finalData, "trendData.csv")
+  return(finalData)
+}
+
+TrendGraphGen <- function(data){
+  
+  trendPlot <- ggplot(data) +
+               geom_line(mapping = aes(x = rank_day, y = number_of_incidents, 
+                                       colour = period))
+  
+  return(trendPlot)
   
 }

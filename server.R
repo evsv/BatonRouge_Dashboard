@@ -12,6 +12,8 @@ server <- function(input, output){
   dataSet <- mutate(dataSet, offense_date = ymd(offense_date),
                       offense_time = as.hms(offense_time))
   
+  # INITIAL OVERVIEW SECTION
+  
   #Filter data according the date range input
   currentWeekData <- eventReactive(input$initialFilterBtn, 
                                    {
@@ -38,10 +40,36 @@ server <- function(input, output){
   
   output$overviewPlot <- renderPlot(overviewGraph())
   
-  #Filter data according to specific crime deep dive
-  
-  
   output$testText1 <- renderText(as.character(nrow(currentWeekData())))
   output$testText2 <- renderText(as.character(nrow(previousWeekData())))
-  output$testText3 <- renderText(as.character(nrow(overviewData())))
+  output$testText3 <- renderText(as.character(nrow(overviewData())))  
+  
+  # CRIME DEEP DIVE SECTION
+  
+  #Filter data according to specific crime deep dive
+  currentWkCrime <- eventReactive(input$crimeFilterBtn,
+                                  {
+                                    FilterData(currentWeekData(), offenseCategory = input$crimeSelector)
+                                  })
+  
+  previousWkCrime <- eventReactive(input$crimeFilterBtn,
+                                   {
+                                    FilterData(previousWeekData(), offenseCategory = input$crimeSelector) 
+                                   })
+  
+  
+  #Create the trend comparision graph
+  trendData <- eventReactive(input$crimeFilterBtn,
+                             {
+                               TrendGraphDataGen(currentWkCrime(), previousWkCrime())
+                             })
+  
+  trendGraph <- eventReactive(input$crimeFilterBtn,
+                              {
+                                TrendGraphGen(trendData())
+                              })
+  
+  output$trendPlot <- renderPlot(trendGraph())
+  output$testText4 <- renderText(as.character(nrow(trendData())))
+  
 }
