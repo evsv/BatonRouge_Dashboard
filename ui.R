@@ -10,7 +10,7 @@ ui <- fluidPage(
   fluidRow(
     
     #NOTE: CURRENTLY HARDCODED, MAKE PROGRAMMATIC ACCORDING TO DATA
-    column(4,
+    column(2,
            
            wellPanel(
              dateRangeInput("initialDateRange", "Analysis Period:",

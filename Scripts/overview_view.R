@@ -192,10 +192,20 @@ TrendGraphDataGen <- function(currentData, previousData){
                   mutate(period = "Previous Week")
   
   finalData <- rbind(currentData, previousData)
-  write.csv(finalData, "trendData.csv")
+  #write.csv(finalData, "trendData.csv")
   return(finalData)
 }
 
+#-------------------------------------------------------------------#
+# TrendGraphGen()
+#
+# data: dataframe. The dataframe containing the crime trend data for 
+#        both the current and previous window
+#
+# Returns: trendPlot, a ggplot object which contains the graph to
+#          to be rendered
+#          
+#-------------------------------------------------------------------#
 TrendGraphGen <- function(data){
   
   trendPlot <- ggplot(data) +
@@ -205,3 +215,28 @@ TrendGraphGen <- function(data){
   return(trendPlot)
   
 }
+
+#-------------------------------------------------------------------#
+# MapGraphGen()
+#
+# data: dataframe. The dataframe containing the spatial crime data 
+#       for the selected crime and window
+# map: ggmap object. The map on which the crime data needs to be 
+#      plotted
+#
+# Returns: mapPlot, a ggplot + ggmap object which contains the map
+#          to be rendered
+#          
+#-------------------------------------------------------------------#
+MapGraphGen <- function(data, map){
+  
+  mapGraph <- map +
+              stat_density2d(mapping = aes(x = long, y = lat, alpha = ..level.., fill = ..level..), 
+                             size = 2, bins = 4, data = data, geom = "polygon") +
+              scale_fill_gradient(low = "green", high = "red") + 
+              guides(alpha = FALSE)
+  
+  return(mapGraph)
+  
+}
+

@@ -7,10 +7,14 @@ source('.\\Scripts\\overview_view.R')
 
 server <- function(input, output){
   
-  #Read the dataset containing the crime data
+  # APP LEVEL DEPENDENCIES
+  
+  #Read the dataset containing the crime data, load the Baton Rouge map
   dataSet <- read_csv(file = ".\\Data\\brdata_cleaned.csv")
   dataSet <- mutate(dataSet, offense_date = ymd(offense_date),
                       offense_time = as.hms(offense_time))
+  
+  brMap <- qmap(location = "baton rouge", zoom = 12)
   
   # INITIAL OVERVIEW SECTION
   
@@ -68,8 +72,14 @@ server <- function(input, output){
                               {
                                 TrendGraphGen(trendData())
                               })
-  
   output$trendPlot <- renderPlot(trendGraph())
-  output$testText4 <- renderText(as.character(nrow(trendData())))
+  
+  #Create the heatmap graph
+  heatMap <- eventReactive(input$crimeFilterBtn,
+                           {
+                             MapGraphGen(currentWkCrime(), brMap)
+                           })
+  output$mapPlot <- renderPlot(heatMap())
+  
   
 }
