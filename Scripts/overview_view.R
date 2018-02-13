@@ -4,6 +4,7 @@
 
 library(dplyr)
 library(ggplot2)
+library(ggmap)
 
 #-------------------------------------------------------------------#
 # ValidFilter()
@@ -161,7 +162,9 @@ OverviewGraphGen <- function(data){
   
   overviewPlot <- ggplot(data) +
                   geom_bar(mapping = aes(x = crime, y = number_of_incidents, fill = period),
-                           position = "dodge", stat = "identity")
+                           position = "dodge", stat = "identity") +
+                  theme(axis.text.x = element_text(angle = 90, hjust = 0.3)) +
+                  labs(x = "Crime", y = "Number of Incidents")
   
   return(overviewPlot)
   
@@ -210,7 +213,8 @@ TrendGraphGen <- function(data){
   
   trendPlot <- ggplot(data) +
                geom_line(mapping = aes(x = rank_day, y = number_of_incidents, 
-                                       colour = period))
+                                       colour = period)) +
+               labs(x = "Day of Week", y = "Number of Incidents")
   
   return(trendPlot)
   

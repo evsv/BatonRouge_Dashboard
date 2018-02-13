@@ -10,7 +10,7 @@ ui <- fluidPage(
   fluidRow(
     
     #NOTE: CURRENTLY HARDCODED, MAKE PROGRAMMATIC ACCORDING TO DATA
-    column(2,
+    column(2, align = "center",
            
            wellPanel(
              dateRangeInput("initialDateRange", "Analysis Period:",
@@ -22,7 +22,7 @@ ui <- fluidPage(
              )
            ),
     
-    column(8, 
+    column(8, align = "center",
            plotOutput("overviewPlot")
            )
     
@@ -32,7 +32,7 @@ ui <- fluidPage(
   
   fluidRow(
     
-    column(2, 
+    column(2, align = "center",
            
            wellPanel(
              selectInput("crimeSelector", "Select crime to deep dive into:",
@@ -48,11 +48,11 @@ ui <- fluidPage(
            )
           ),
     
-    column(5, 
+    column(5, align = "center",
            plotOutput("trendPlot")
            ),
-    column(5,
-           h1("Placeholder")
+    column(5, align = "center", 
+           plotOutput("mapPlot")
            )
     
   )
